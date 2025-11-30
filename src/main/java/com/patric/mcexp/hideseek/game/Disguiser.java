@@ -11,10 +11,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class Disguiser {
 
     private final HashMap<Player, Disguise> disguises;
+    private int disguiseTickCounter = 0;
 
     public Disguiser(){
         this.disguises = new HashMap<>();
@@ -38,13 +41,22 @@ public class Disguiser {
     }
 
     public void check(){
-        for(HashMap.Entry<Player, Disguise> set : disguises.entrySet()){
-            Disguise disguise = set.getValue();
-            Player player = set.getKey();
-            if(!player.isOnline()) {
+        disguiseTickCounter++;
+        boolean shouldUpdate = disguiseTickCounter >= disguiseUpdateDelayTicks;
+        if (shouldUpdate) {
+            disguiseTickCounter = 0;
+        }
+
+        Iterator<Map.Entry<Player, Disguise>> iterator = disguises.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Player, Disguise> entry = iterator.next();
+            Player player = entry.getKey();
+            Disguise disguise = entry.getValue();
+
+            if (!player.isOnline()) {
                 disguise.remove();
-                disguises.remove(player);
-            } else {
+                iterator.remove();
+            } else if (shouldUpdate) {
                 disguise.update();
             }
         }

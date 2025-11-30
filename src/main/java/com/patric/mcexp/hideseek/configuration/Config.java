@@ -65,9 +65,11 @@ public class Config {
         dontRewardQuit,
 		spawnPatch,
 		dropItems,
-        respawnAsSpectator,
-        waitTillNoneLeft,
-        gameOverTitle,
+		respawnAsSpectator,
+		waitTillNoneLeft,
+		gameOverTitle,
+		// How many ticks between disguise/block updates
+		disguiseUpdateDelayTicks,
 		regenHealth,
 		debugDisguise;
 
@@ -260,6 +262,8 @@ public class Config {
 		dropItems = config.getBoolean("dropItems");
 		regenHealth = config.getBoolean("regenHealth");
 		debugDisguise = config.getBoolean("debugDisguise");
+		int rawDisguiseDelay = config.getInt("disguiseUpdateDelayTicks");
+		disguiseUpdateDelayTicks = rawDisguiseDelay <= 0 ? 2 : rawDisguiseDelay;
 
 	}
 

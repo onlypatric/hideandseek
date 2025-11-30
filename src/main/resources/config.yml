@@ -90,6 +90,11 @@ pvp: true
 # default: false
 regenHealth: false
 
+# How many ticks between block/disguise updates.
+# Lower = smoother movement (more packets), higher = fewer packets.
+# default: 2
+disguiseUpdateDelayTicks: 2
+
 # Enable verbose disguise debugging (used by CI)
 debugDisguise: false
 
