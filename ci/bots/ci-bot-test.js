@@ -4,18 +4,18 @@ const BOT_NAME = process.env.CI_BOT_NAME || 'CiBot1';
 const HOST = process.env.CI_BOT_HOST || '127.0.0.1';
 const PORT = Number(process.env.CI_BOT_PORT || 25565);
 
-function createBot() {
+function createBot(name) {
   console.log(`[BOT] Starting bot "${BOT_NAME}" targeting ${HOST}:${PORT}`);
 
   const bot = mineflayer.createBot({
     host: HOST,
     port: PORT,
-    username: BOT_NAME,
+    username: name,
     version: false
   });
 
   bot.on('login', () => {
-    console.log('[BOT] Logged in as', BOT_NAME);
+    console.log('[BOT] Logged in as', name);
   });
 
   bot.on('spawn', () => {
@@ -59,4 +59,6 @@ function createBot() {
   });
 }
 
-createBot();
+// Create two bots so the game can start (minPlayers >= 2)
+createBot(BOT_NAME);
+createBot(`${BOT_NAME}_2`);

@@ -34,6 +34,7 @@ jobs:
           cp target/mcexp-hideandseek-*.jar server/plugins/
           cp ci/server-config/server.properties server/
           cp ci/server-config/maps.yml server/plugins/KenshinsHideAndSeek/
+          cp ci/server-config/config.yml server/plugins/KenshinsHideAndSeek/
           cd server
           echo "eula=true" > eula.txt
 

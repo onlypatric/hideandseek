@@ -1,0 +1,181 @@
+# CI-specific configuration for Kenshin's Hide and Seek.
+# Based on the default config.yml, but tweaked so that:
+# - Permissions are not required (permissionsRequired: false)
+# - Map save is disabled to avoid heavy file I/O (mapSaveEnabled: false)
+# - Exit position is set to a valid location in "world"
+
+spawnPatch: false
+
+gameLength: 1200
+
+hidingTimer: 30
+
+announceMessagesToNonPlayers: true
+
+dropItems: false
+
+hideCountdownDisplay: "CHAT"
+
+nametagsVisible: false
+
+permissionsRequired: false
+
+minPlayers: 2
+
+startingSeekerCount: 1
+
+respawnAsSpectator: false
+
+waitTillNoneLeft: true
+
+dontRewardQuit: false
+
+endGameDelay: 5
+
+gameOverTitle: true
+
+pvp: true
+
+regenHealth: false
+
+allowNaturalCauses: false
+
+autoJoin: false
+
+teleportToExit: false
+
+leaveOnEnd: false
+
+leaveType: "EXIT"
+
+leaveServer: "hub"
+
+mapSaveEnabled: false
+
+saveInventory: false
+
+delayedRespawn:
+  enabled: true
+  delay: 5
+
+databaseType: "SQLITE"
+
+databaseHost: "localhost"
+databasePort: 3306
+databaseUser: "root"
+databasePass: "pass"
+databaseName: "hideandseek"
+
+taunt:
+  delay: 360
+  whenLastPerson: false
+  showCountdown: true
+  enabled: true
+
+glow:
+  time: 30
+  stackable: true
+  enabled: true
+  name: "Glow Powerup"
+  lore: [
+    "Throw to make all seekers glow",
+    "Last 30s, all hiders can see it",
+    "Time stacks on multi use"
+  ]
+  material: "SNOWBALL"
+  model-data: 0
+
+alwaysGlow: false
+
+prefix:
+  default: '&9Hide and Seek > &f'
+  error: '&cError > &f'
+  taunt: '&eTaunt > &f'
+  border: '&cWorld Border > &f'
+  abort: '&cAbort > &f'
+  gameover: '&aGame Over > &f'
+  warning: '&cWarning > &f'
+
+placeholder:
+  incorrect: "{Error}"
+  noData: "{No Data}"
+
+lobby:
+  countdown: 60
+  changeCountdown: 5
+  min: 2
+  max: 10
+  enabled: true
+
+lobbyItems:
+  leave:
+    material: "BED"
+    name: "&cLeave Lobby"
+    lore: [
+      "Go back to server hub"
+    ]
+    position: 8
+    model-data: 0
+    enabled: true
+  start:
+    material: "CLOCK"
+    name: "&bStart Game"
+    lore: []
+    position: 0
+    model-data: 0
+    enabled: true
+    adminOnly: true
+
+spectatorItems:
+  flight:
+    material: "FEATHER"
+    name: "&bToggle Flight"
+    lore: [
+      "Turns flying on and off"
+    ]
+    position: 3
+    model-data: 0
+  teleport:
+    material: "COMPASS"
+    name: "&bTeleport to Others"
+    lore: [
+      "Allows you to teleport to all other players in game"
+    ]
+    position: 5
+    model-data: 0
+
+seekerPing:
+  distances:
+    level1: 30
+    level2: 20
+    level3: 10
+  sounds:
+    leadingVolume: 0.5
+    volume: 0.3
+    pitch: 1
+    heartbeatNoise: "BLOCK_NOTE_BLOCK_BASEDRUM"
+    ringingNoise: "BLOCK_NOTE_BLOCK_PLING"
+  enabled: true
+
+locale: "en-US"
+
+blockedCommands: [
+  "msg",
+  "reply",
+  "me"
+]
+
+blockedInteracts: [
+  "FURNACE",
+  "CRAFTING_TABLE",
+  "ANVIL",
+  "CHEST",
+  "BARREL"
+]
+
+exit:
+  x: 0
+  y: 64
+  z: 0
+  world: "world"
+
