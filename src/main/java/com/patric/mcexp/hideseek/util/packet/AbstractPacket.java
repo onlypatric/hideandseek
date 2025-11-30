@@ -1,0 +1,27 @@
+package com.patric.mcexp.hideseek.util.packet;
+
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
+import org.bukkit.entity.Player;
+
+public class AbstractPacket {
+
+    private static final ProtocolManager protocolManager;
+    static {
+        protocolManager = ProtocolLibrary.getProtocolManager();
+    }
+
+    protected final PacketContainer packet;
+
+    protected AbstractPacket(PacketType type){
+        packet = protocolManager.createPacket(type);
+        packet.getModifier().writeDefaults();
+    }
+
+    public void send(Player player){
+        protocolManager.sendServerPacket(player, packet);
+    }
+
+}

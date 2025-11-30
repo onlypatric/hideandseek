@@ -1,5 +1,5 @@
 name: KenshinsHideAndSeek
-main: cat.freya.khs.Main
+main: com.patric.mcexp.hideseek.Main
 version: 1.7.6
 author: KenshinEto
 load: STARTUP
