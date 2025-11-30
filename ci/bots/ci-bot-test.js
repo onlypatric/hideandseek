@@ -76,26 +76,34 @@ function createBot(name, isLeader) {
     console.log('[BOT][CHAT]', message.toString());
   });
 
-  bot.on('windowOpen', (window) => {
-    const title = window?.title?.toString?.() || String(window?.title || '');
-    console.log(`[BOT ${name}] Window opened with title: "${title}"`);
+  let hasClickedWindow = false;
 
-    // Look for the BlockHunt selection GUI: "Select a Block: <map>"
-    if (title.startsWith('Select a Block:')) {
-      console.log(`[BOT ${name}] Detected BlockHunt GUI, selecting first block slot`);
-      // Small delay to ensure contents are ready
+  bot.on('windowOpen', (window) => {
+    const rawTitle = window?.title;
+    const title =
+      typeof rawTitle === 'string'
+        ? rawTitle
+        : rawTitle
+          ? JSON.stringify(rawTitle)
+          : '';
+    console.log(`[BOT ${name}] Window opened with title: ${title}`);
+
+    // In CI, the only meaningful GUI we expect is the BlockHunt picker.
+    // Click the first slot once to trigger disguise logic.
+    if (!hasClickedWindow) {
+      hasClickedWindow = true;
+      console.log(`[BOT ${name}] Attempting to click first slot in window`);
       setTimeout(() => {
         try {
-          // Click the first slot (0) with left-click
           bot.clickWindow(0, 0, 0, (err) => {
             if (err) {
-              console.error(`[BOT ${name}] Error clicking BlockHunt slot:`, err);
+              console.error(`[BOT ${name}] Error clicking window slot 0:`, err);
             } else {
-              console.log(`[BOT ${name}] Clicked BlockHunt slot 0`);
+              console.log(`[BOT ${name}] Clicked window slot 0`);
             }
           });
         } catch (e) {
-          console.error(`[BOT ${name}] Exception while clicking BlockHunt slot:`, e);
+          console.error(`[BOT ${name}] Exception while clicking window slot:`, e);
         }
       }, 1000);
     }
