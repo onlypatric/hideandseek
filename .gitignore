@@ -4,5 +4,6 @@ project
 bin/
 target/
 .git/
+.git-archive-*/
 .idea
 *.iml
