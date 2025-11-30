@@ -14,13 +14,13 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-@SuppressWarnings("deprecation")
 public class Disguise {
 
     final Player hider;
     final Material material;
     FallingBlock block;
     AbstractHorse hitBox;
+    BlockDisplay display;
     Location blockLocation;
     boolean solid, solidify, solidifying;
     static Team hidden;
@@ -56,6 +56,9 @@ public class Disguise {
                 hidden.removeEntry(hitBox.getUniqueId().toString());
             hitBox.remove();
         }
+        if (display != null) {
+            display.remove();
+        }
         if(solid)
             sendBlockUpdate(blockLocation, Material.AIR);
         hider.removePotionEffect(PotionEffectType.INVISIBILITY);
@@ -84,6 +87,10 @@ public class Disguise {
             if(block != null) block.remove();
             respawnFallingBlock();
         }
+        if (display == null || display.isDead()) {
+            if (display != null) display.remove();
+            respawnBlockDisplay();
+        }
 
         if(solidify){
             if(!solid) {
@@ -103,6 +110,7 @@ public class Disguise {
         toggleEntityVisibility(block, !solid);
         teleportEntity(hitBox, true);
         teleportEntity(block, solid);
+        teleportEntity(display, solid);
 
         if (Config.debugDisguise && block != null) {
             Location bLoc = block.getLocation();
@@ -173,6 +181,21 @@ public class Disguise {
         }
         block.setDropItem(false);
         block.setInvulnerable(true);
+    }
+
+    private void respawnBlockDisplay() {
+        Location spawn = hider.getLocation().add(0, 1000, 0);
+        Entity spawned = hider.getWorld().spawnEntity(spawn, EntityType.BLOCK_DISPLAY);
+        if (spawned instanceof BlockDisplay) {
+            display = (BlockDisplay) spawned;
+            display.setBlock(material.createBlockData());
+            display.setInvulnerable(true);
+            try {
+                display.setGravity(false);
+            } catch (NoSuchMethodError ignored) {
+                // Gravity control not available on older APIs
+            }
+        }
     }
 
     private void respawnHitbox(){
