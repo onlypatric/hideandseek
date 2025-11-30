@@ -138,9 +138,9 @@ public class Disguise {
         if (entity == null) return;
         double x, y, z;
         if (center) {
-            x = hider.getLocation().getX() + 0.5;
+            x = hider.getLocation().getX() - 0.5;
             y = hider.getLocation().getY();
-            z = hider.getLocation().getZ() + 0.5;
+            z = hider.getLocation().getZ() - 0.5;
         } else {
             x = hider.getLocation().getX();
             y = hider.getLocation().getY();
@@ -170,7 +170,7 @@ public class Disguise {
     }
 
     private void respawnBlockDisplay() {
-        Location spawn = hider.getLocation().add(0.5, 1000, 0.5);
+        Location spawn = hider.getLocation().add(-0.5, 1000, -0.5);
         Entity spawned = hider.getWorld().spawnEntity(spawn, EntityType.BLOCK_DISPLAY);
         if (spawned instanceof BlockDisplay) {
             display = (BlockDisplay) spawned;
