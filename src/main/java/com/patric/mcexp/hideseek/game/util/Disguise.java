@@ -138,7 +138,6 @@ public class Disguise {
         packet.setBlockPosition(location);
         packet.setMaterial(material);
         Bukkit.getOnlinePlayers().forEach(receiver -> {
-            if(receiver.getName().equals(hider.getName())) return;
             packet.send(receiver);
         });
     }
@@ -179,7 +178,8 @@ public class Disguise {
     }
 
     private void respawnBlockDisplay() {
-        Location spawn = hider.getLocation().add(-0.5, 1000, -0.5);
+        Location base = hider.getLocation().add(-0.5, 1000, -0.5);
+        Location spawn = new Location(base.getWorld(), base.getX(), base.getY(), base.getZ(), 0.0f, 0.0f);
         Entity spawned = hider.getWorld().spawnEntity(spawn, EntityType.BLOCK_DISPLAY);
         if (spawned instanceof BlockDisplay) {
             display = (BlockDisplay) spawned;
