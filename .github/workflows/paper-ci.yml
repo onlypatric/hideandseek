@@ -93,7 +93,7 @@ jobs:
             sleep 5
           fi
 
-      - name: Print server warnings and errors
+      - name: Print server warnings, errors, and disguise logs
         working-directory: server
         run: |
           echo "---- server.log (WARN/ERROR/Exception lines) ----"
@@ -107,6 +107,15 @@ jobs:
             (grep -En 'WARN|ERROR|Exception' logs/latest.log || echo 'No WARN/ERROR/Exception lines in latest.log')
           else
             echo "logs/latest.log not found"
+          fi
+          echo "---- logs/latest.log ([DISGUISE] lines) ----"
+          if [ -f logs/latest.log ]; then
+            if grep -En '\\[DISGUISE\\]' logs/latest.log; then
+              echo \"[CI] Found disguise debug logs.\"
+            else
+              echo \"[CI] No [DISGUISE] logs found; disguise may not have spawned or updated.\"
+              exit 1
+            fi
           fi
 
       - name: Verify plugin loaded successfully

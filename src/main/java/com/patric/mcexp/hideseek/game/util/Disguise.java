@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XSound;
 import com.cryptomorin.xseries.messages.ActionBar;
 import com.patric.mcexp.hideseek.util.packet.BlockChangePacket;
 import com.patric.mcexp.hideseek.Main;
+import com.patric.mcexp.hideseek.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -102,6 +103,18 @@ public class Disguise {
         toggleEntityVisibility(block, !solid);
         teleportEntity(hitBox, true);
         teleportEntity(block, solid);
+
+        if (Config.debugDisguise && block != null) {
+            Location bLoc = block.getLocation();
+            Location hLoc = hider.getLocation();
+            Main.getInstance().getLogger().info(String.format(
+                    "[DISGUISE] solid=%s blockId=%d blockLoc=(%.2f,%.2f,%.2f) hiderLoc=(%.2f,%.2f,%.2f)",
+                    solid,
+                    block.getEntityId(),
+                    bLoc.getX(), bLoc.getY(), bLoc.getZ(),
+                    hLoc.getX(), hLoc.getY(), hLoc.getZ()
+            ));
+        }
     }
 
     public void setSolidify(boolean value){

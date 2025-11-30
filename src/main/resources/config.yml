@@ -90,6 +90,9 @@ pvp: true
 # default: false
 regenHealth: false
 
+# Enable verbose disguise debugging (used by CI)
+debugDisguise: false
+
 # !! Only effects the game at all if pvp is set to false !!
 # By default, If you disable pvp, Hiders and Seekers can no longer take damage from natural causes such as
 # falling or projectiles. If you want, you can keep pvp disabled so that Seekers only have to tag Hiders, but

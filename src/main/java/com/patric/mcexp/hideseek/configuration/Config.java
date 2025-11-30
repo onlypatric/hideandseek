@@ -68,7 +68,8 @@ public class Config {
         respawnAsSpectator,
         waitTillNoneLeft,
         gameOverTitle,
-		regenHealth;
+		regenHealth,
+		debugDisguise;
 
 	public static int
 		minPlayers,
@@ -258,6 +259,7 @@ public class Config {
 		spawnPatch = config.getBoolean("spawnPatch");
 		dropItems = config.getBoolean("dropItems");
 		regenHealth = config.getBoolean("regenHealth");
+		debugDisguise = config.getBoolean("debugDisguise");
 
 	}
 

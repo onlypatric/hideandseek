@@ -179,3 +179,4 @@ exit:
   z: 0
   world: "world"
 
+debugDisguise: true
