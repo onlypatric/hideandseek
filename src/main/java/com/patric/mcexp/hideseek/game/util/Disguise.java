@@ -8,7 +8,12 @@ import com.patric.mcexp.hideseek.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.BlockDisplay;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
@@ -18,7 +23,6 @@ public class Disguise {
 
     final Player hider;
     final Material material;
-    FallingBlock block;
     AbstractHorse hitBox;
     BlockDisplay display;
     Location blockLocation;
@@ -41,7 +45,6 @@ public class Disguise {
         this.hider = player;
         this.material = material;
         this.solid = false;
-        respawnFallingBlock();
         player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 0,false, false));
         if(Main.getInstance().supports(9)) {
             hidden.addEntry(player.getName());
@@ -49,8 +52,6 @@ public class Disguise {
     }
 
     public void remove(){
-        if(block != null)
-            block.remove();
         if(hitBox != null){
             if(Main.getInstance().supports(9))
                 hidden.removeEntry(hitBox.getUniqueId().toString());
@@ -68,8 +69,8 @@ public class Disguise {
     }
 
     public int getEntityID() {
-        if(block == null) return -1;
-        return block.getEntityId();
+        if(display == null) return -1;
+        return display.getEntityId();
     }
 
     public int getHitBoxID() {
@@ -82,11 +83,6 @@ public class Disguise {
     }
 
     public void update(){
-
-        if(block == null || block.isDead()){
-            if(block != null) block.remove();
-            respawnFallingBlock();
-        }
         if (display == null || display.isDead()) {
             if (display != null) display.remove();
             respawnBlockDisplay();
@@ -107,18 +103,17 @@ public class Disguise {
             hitBox = null;
             sendBlockUpdate(blockLocation, Material.AIR);
         }
-        toggleEntityVisibility(block, !solid);
+        toggleEntityVisibility(display, !solid);
         teleportEntity(hitBox, true);
-        teleportEntity(block, solid);
-        teleportEntity(display, solid);
+        teleportEntity(display, true);
 
-        if (Config.debugDisguise && block != null) {
-            Location bLoc = block.getLocation();
+        if (Config.debugDisguise && display != null) {
+            Location bLoc = display.getLocation();
             Location hLoc = hider.getLocation();
             Main.getInstance().getLogger().info(String.format(
                     "[DISGUISE] solid=%s blockId=%d blockLoc=(%.2f,%.2f,%.2f) hiderLoc=(%.2f,%.2f,%.2f)",
                     solid,
-                    block.getEntityId(),
+                    display.getEntityId(),
                     bLoc.getX(), bLoc.getY(), bLoc.getZ(),
                     hLoc.getX(), hLoc.getY(), hLoc.getZ()
             ));
@@ -143,9 +138,9 @@ public class Disguise {
         if (entity == null) return;
         double x, y, z;
         if (center) {
-            x = Math.round(hider.getLocation().getX() + .5) - .5;
-            y = Math.round(hider.getLocation().getY());
-            z = Math.round(hider.getLocation().getZ() + .5) - .5;
+            x = hider.getLocation().getX() + 0.5;
+            y = hider.getLocation().getY();
+            z = hider.getLocation().getZ() + 0.5;
         } else {
             x = hider.getLocation().getX();
             y = hider.getLocation().getY();
@@ -174,17 +169,8 @@ public class Disguise {
         });
     }
 
-    private void respawnFallingBlock(){
-        block = hider.getLocation().getWorld().spawnFallingBlock(hider.getLocation().add(0, 1000, 0), material, (byte)0);
-        if (Main.getInstance().supports(10)) {
-            block.setGravity(false);
-        }
-        block.setDropItem(false);
-        block.setInvulnerable(true);
-    }
-
     private void respawnBlockDisplay() {
-        Location spawn = hider.getLocation().add(0, 1000, 0);
+        Location spawn = hider.getLocation().add(0.5, 1000, 0.5);
         Entity spawned = hider.getWorld().spawnEntity(spawn, EntityType.BLOCK_DISPLAY);
         if (spawned instanceof BlockDisplay) {
             display = (BlockDisplay) spawned;
