@@ -3,6 +3,7 @@ package com.patric.mcexp.hideseek.game;
 import static com.patric.mcexp.hideseek.configuration.Config.*;
 import static com.patric.mcexp.hideseek.configuration.Localization.message;
 
+import com.patric.mcexp.hideseek.Main;
 import com.patric.mcexp.hideseek.game.util.Disguise;
 import com.patric.mcexp.hideseek.configuration.Map;
 import org.bukkit.Material;
@@ -59,6 +60,15 @@ public class Disguiser {
         }
         Disguise disguise = new Disguise(player, material);
         disguises.put(player, disguise);
+        if (debugDisguise) {
+            Main.getInstance().getLogger().info(String.format(
+                    "[DISGUISE] created for %s material=%s entityId=%d map=%s",
+                    player.getName(),
+                    material.name(),
+                    disguise.getEntityID(),
+                    map.getName()
+            ));
+        }
     }
 
     public void reveal(Player player){
