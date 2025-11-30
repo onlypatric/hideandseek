@@ -7,3 +7,4 @@ target/
 .git-archive-*/
 .idea
 *.iml
+.DS_store

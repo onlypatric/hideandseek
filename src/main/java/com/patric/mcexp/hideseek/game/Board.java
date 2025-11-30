@@ -377,10 +377,10 @@ class CustomBoard {
         this.player = player;
         if (Main.getInstance().supports(13)) {
             this.obj = board.registerNewObjective(
-                    "Scoreboard", "dummy", ChatColor.translateAlternateColorCodes('&', title));
+                    "Scoreboard", Criteria.DUMMY, ChatColor.translateAlternateColorCodes('&', title));
         } else {
-            this.obj = board.registerNewObjective("Scoreboard", "dummy");
-            this.obj.setDisplayName(ChatColor.translateAlternateColorCodes('&', title));
+            this.obj = board.registerNewObjective("Scoreboard", Criteria.DUMMY,
+                    ChatColor.translateAlternateColorCodes('&', title));
         }
         this.blanks = 0;
         this.displayed = false;

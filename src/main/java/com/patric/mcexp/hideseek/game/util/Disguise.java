@@ -3,7 +3,6 @@ package com.patric.mcexp.hideseek.game.util;
 import com.cryptomorin.xseries.XSound;
 import com.cryptomorin.xseries.messages.ActionBar;
 import com.patric.mcexp.hideseek.util.packet.BlockChangePacket;
-import com.patric.mcexp.hideseek.util.packet.EntityTeleportPacket;
 import com.patric.mcexp.hideseek.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -120,23 +119,27 @@ public class Disguise {
     }
 
     private void teleportEntity(Entity entity, boolean center) {
-        if(entity == null) return;
-        EntityTeleportPacket packet = new EntityTeleportPacket();
-        packet.setEntity(entity);
-        double x,y,z;
-        if(center){
-            x = Math.round(hider.getLocation().getX()+.5)-.5;
+        if (entity == null) return;
+        double x, y, z;
+        if (center) {
+            x = Math.round(hider.getLocation().getX() + .5) - .5;
             y = Math.round(hider.getLocation().getY());
-            z = Math.round(hider.getLocation().getZ()+.5)-.5;
+            z = Math.round(hider.getLocation().getZ() + .5) - .5;
         } else {
             x = hider.getLocation().getX();
             y = hider.getLocation().getY();
             z = hider.getLocation().getZ();
         }
-        packet.setX(x);
-        packet.setY(y);
-        packet.setZ(z);
-        Bukkit.getOnlinePlayers().forEach(packet::send);
+        org.bukkit.Location current = entity.getLocation();
+        org.bukkit.Location target = new org.bukkit.Location(
+                current.getWorld(),
+                x,
+                y,
+                z,
+                current.getYaw(),
+                current.getPitch()
+        );
+        entity.teleport(target);
     }
 
     private void toggleEntityVisibility(Entity entity, boolean show){
