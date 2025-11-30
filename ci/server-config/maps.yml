@@ -1,0 +1,36 @@
+maps:
+  ci_map:
+    spawns:
+      game:
+        world: "world"
+        x: 0.0
+        y: 64.0
+        z: 0.0
+      lobby:
+        world: "world"
+        x: 0.0
+        y: 64.0
+        z: 0.0
+      seeker:
+        world: "world"
+        x: 0.0
+        y: 64.0
+        z: 0.0
+    bounds:
+      min:
+        x: -10
+        z: -10
+      max:
+        x: 10
+        z: 10
+    worldborder:
+      pos:
+        x: 0
+        z: 0
+      size: 0
+      delay: 0
+      change: 0
+    blockhunt:
+      enabled: false
+      blocks: []
+

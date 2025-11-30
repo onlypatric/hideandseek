@@ -20,13 +20,20 @@ jobs:
           java-version: '21'
           cache: maven
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Build plugin and run unit tests
         run: mvn -B -ntp clean verify
 
       - name: Prepare Paper server directory
         run: |
-          mkdir -p server/plugins
+          mkdir -p server/plugins/KenshinsHideAndSeek
           cp target/mcexp-hideandseek-*.jar server/plugins/
+          cp ci/server-config/server.properties server/
+          cp ci/server-config/maps.yml server/plugins/KenshinsHideAndSeek/
           cd server
           echo "eula=true" > eula.txt
 
@@ -47,12 +54,41 @@ jobs:
             "https://api.papermc.io/v2/projects/paper/versions/${PAPER_VERSION}/builds/${PAPER_BUILD}/downloads/${PAPER_JAR}" \
             -o "${PAPER_JAR}"
 
-      - name: Start Paper server with plugin (smoke test)
+      - name: Start Paper server
         working-directory: server
         run: |
           PAPER_JAR=$(ls paper-*.jar)
-          # Run server for up to 90 seconds to allow startup
-          timeout 90 java -Xms512M -Xmx1G -jar "$PAPER_JAR" --nogui || true
+          java -Xms512M -Xmx1G -jar "$PAPER_JAR" --nogui > server.log 2>&1 &
+          echo $! > ../server.pid
+          # Wait for server to finish starting (up to ~120s)
+          timeout=120
+          while [ $timeout -gt 0 ]; do
+            if grep -q "Done (" server.log 2>/dev/null; then
+              echo "Server started."
+              break
+            fi
+            sleep 5
+            timeout=$((timeout-5))
+          done
+          if [ $timeout -le 0 ]; then
+            echo "Server did not start in time"
+            cat server.log
+            exit 1
+          fi
+
+      - name: Install bot dependencies
+        run: npm install
+
+      - name: Run JavaScript bot smoke test
+        run: node ci-bot-test.js
+
+      - name: Stop Paper server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then
+            kill "$(cat server.pid)" || true
+            sleep 5
+          fi
 
       - name: Verify plugin loaded successfully
         working-directory: server

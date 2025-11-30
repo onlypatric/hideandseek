@@ -1,0 +1,11 @@
+{
+  "name": "mcexp-hideandseek-bots",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "CI bot client for Hide and Seek plugin",
+  "dependencies": {
+    "mineflayer": "^4.22.0"
+  }
+}
+
