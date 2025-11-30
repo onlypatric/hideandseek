@@ -49,11 +49,16 @@ public class MovementHandler implements Listener {
 
     private void checkBounds(PlayerMoveEvent event){
         if (!Main.getInstance().getBoard().contains(event.getPlayer())) return;
-        if (!event.getPlayer().getWorld().getName().equals(Main.getInstance().getGame().getCurrentMap().getGameSpawnName())) return;
-        if (!event.getTo().getWorld().getName().equals(Main.getInstance().getGame().getCurrentMap().getGameSpawnName())) return;
+        Map currentMap = Main.getInstance().getGame().getCurrentMap();
+        if (currentMap == null || currentMap.isNotSetup()) return;
+        String gameWorld = currentMap.getGameSpawnName();
+        if (!event.getPlayer().getWorld().getName().equals(gameWorld)) return;
+        if (!event.getTo().getWorld().getName().equals(gameWorld)) return;
         if (event.getPlayer().hasPermission("hs.leavebounds")) return;
-        Map map = Main.getInstance().getGame().getCurrentMap();
-        if (event.getTo().getBlockX() < map.getBoundsMin().getBlockX() || event.getTo().getBlockX() > map.getBoundsMax().getBlockX() || event.getTo().getBlockZ() < map.getBoundsMin().getZ() || event.getTo().getBlockZ() > map.getBoundsMax().getZ()) {
+        if (event.getTo().getBlockX() < currentMap.getBoundsMin().getBlockX()
+                || event.getTo().getBlockX() > currentMap.getBoundsMax().getBlockX()
+                || event.getTo().getBlockZ() < currentMap.getBoundsMin().getZ()
+                || event.getTo().getBlockZ() > currentMap.getBoundsMax().getZ()) {
             event.setCancelled(true);
         }
     }
