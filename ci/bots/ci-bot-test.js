@@ -29,6 +29,29 @@ function createBot(name, isLeader) {
         console.log(`[BOT ${name}] Sending /hs start ${targetSeeker}`);
         bot.chat(`/hs start ${targetSeeker}`);
       }, 5000);
+
+      // After hiding should be over, move around a bit as a disguised block
+      setTimeout(() => {
+        console.log(`[BOT ${name}] Moving forward to simulate block movement`);
+        bot.setControlState('forward', true);
+        setTimeout(() => {
+          bot.setControlState('forward', false);
+          console.log(`[BOT ${name}] Stopped moving`);
+        }, 5000);
+      }, 15000);
+    } else {
+      // Seeker periodically attacks nearest player to trigger hit logic
+      setInterval(() => {
+        const target = bot.nearestEntity((e) => e.type === 'player' && e.username !== name);
+        if (target) {
+          console.log(`[BOT ${name}] Attacking ${target.username || target.name}`);
+          try {
+            bot.attack(target);
+          } catch (e) {
+            console.error(`[BOT ${name}] Error during attack:`, e);
+          }
+        }
+      }, 5000);
     }
 
     setTimeout(() => {
