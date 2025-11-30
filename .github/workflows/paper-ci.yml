@@ -30,6 +30,13 @@ jobs:
           cd server
           echo "eula=true" > eula.txt
 
+      - name: Download ProtocolLib
+        working-directory: server/plugins
+        run: |
+          curl -L \
+            "https://github.com/dmulloy2/ProtocolLib/releases/download/5.4.0/ProtocolLib.jar" \
+            -o ProtocolLib.jar
+
       - name: Download Paper 1.21.8
         working-directory: server
         run: |
@@ -60,4 +67,3 @@ jobs:
             exit 1
           fi
           echo "Plugin enabled successfully on a real Paper server."
-
