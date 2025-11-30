@@ -93,18 +93,18 @@ jobs:
             sleep 5
           fi
 
-      - name: Print server error lines
+      - name: Print server warnings and errors
         working-directory: server
         run: |
-          echo "---- server.log (ERROR/Exception lines) ----"
+          echo "---- server.log (WARN/ERROR/Exception lines) ----"
           if [ -f server.log ]; then
-            (grep -En 'ERROR|Exception' server.log || echo 'No ERROR/Exception lines in server.log')
+            (grep -En 'WARN|ERROR|Exception' server.log || echo 'No WARN/ERROR/Exception lines in server.log')
           else
             echo "server.log not found"
           fi
-          echo "---- logs/latest.log (ERROR/Exception lines) ----"
+          echo "---- logs/latest.log (WARN/ERROR/Exception lines) ----"
           if [ -f logs/latest.log ]; then
-            (grep -En 'ERROR|Exception' logs/latest.log || echo 'No ERROR/Exception lines in latest.log')
+            (grep -En 'WARN|ERROR|Exception' logs/latest.log || echo 'No WARN/ERROR/Exception lines in latest.log')
           else
             echo "logs/latest.log not found"
           fi
