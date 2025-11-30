@@ -31,6 +31,7 @@ maps:
       delay: 0
       change: 0
     blockhunt:
-      enabled: false
-      blocks: []
-
+      enabled: true
+      blocks:
+        - "STONE"
+        - "OAK_PLANKS"

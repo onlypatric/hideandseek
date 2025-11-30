@@ -4,8 +4,8 @@ const BOT_NAME = process.env.CI_BOT_NAME || 'CiBot1';
 const HOST = process.env.CI_BOT_HOST || '127.0.0.1';
 const PORT = Number(process.env.CI_BOT_PORT || 25565);
 
-function createBot(name) {
-  console.log(`[BOT] Starting bot "${BOT_NAME}" targeting ${HOST}:${PORT}`);
+function createBot(name, isLeader) {
+  console.log(`[BOT] Starting bot "${name}" targeting ${HOST}:${PORT}`);
 
   const bot = mineflayer.createBot({
     host: HOST,
@@ -19,17 +19,20 @@ function createBot(name) {
   });
 
   bot.on('spawn', () => {
-    console.log('[BOT] Spawned at', bot.entity.position);
-    console.log('[BOT] Sending /hs join');
+    console.log(`[BOT ${name}] Spawned at`, bot.entity.position);
+    console.log(`[BOT ${name}] Sending /hs join`);
     bot.chat('/hs join');
 
-    setTimeout(() => {
-      console.log('[BOT] Sending /hs start');
-      bot.chat('/hs start');
-    }, 5000);
+    if (isLeader) {
+      setTimeout(() => {
+        const targetSeeker = `${BOT_NAME}_2`;
+        console.log(`[BOT ${name}] Sending /hs start ${targetSeeker}`);
+        bot.chat(`/hs start ${targetSeeker}`);
+      }, 5000);
+    }
 
     setTimeout(() => {
-      console.log('[BOT] Finished test window, quitting');
+      console.log(`[BOT ${name}] Finished test window, quitting`);
       bot.quit();
     }, 30000);
   });
@@ -37,7 +40,7 @@ function createBot(name) {
   bot.on('move', () => {
     // Log coarse-grained movement occasionally
     if (Math.random() < 0.01) {
-      console.log('[BOT] Position', bot.entity.position);
+      console.log(`[BOT ${name}] Position`, bot.entity.position);
     }
   });
 
@@ -46,11 +49,11 @@ function createBot(name) {
   });
 
   bot.on('kicked', (reason, loggedIn) => {
-    console.log('[BOT] Kicked. loggedIn=', loggedIn, 'reason=', reason);
+    console.log(`[BOT ${name}] Kicked. loggedIn=`, loggedIn, 'reason=', reason);
   });
 
   bot.on('end', () => {
-    console.log('[BOT] Disconnected, exiting.');
+    console.log(`[BOT ${name}] Disconnected, exiting.`);
     process.exit(0);
   });
 
@@ -60,5 +63,5 @@ function createBot(name) {
 }
 
 // Create two bots so the game can start (minPlayers >= 2)
-createBot(BOT_NAME);
-createBot(`${BOT_NAME}_2`);
+createBot(BOT_NAME, true);         // leader, issues /hs start <seeker>
+createBot(`${BOT_NAME}_2`, false); // follower
