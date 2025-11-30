@@ -7,8 +7,10 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -179,6 +181,36 @@ public class Items {
         if (material.equalsIgnoreCase("POTION") || material.equalsIgnoreCase("SPLASH_POTION") || material.equalsIgnoreCase("LINGERING_POTION"))
             config.set("base-effect", String.format("%s,%s,%s", item.getString("type"), false, splash));
         ItemStack stack = XItemStack.deserialize(config);
+
+        // Explicitly set potion base type to avoid "uncraftable" potions on newer versions
+        String originalMaterial = item.getString("material");
+        if (originalMaterial != null
+                && (originalMaterial.equalsIgnoreCase("POTION")
+                || originalMaterial.equalsIgnoreCase("SPLASH_POTION")
+                || originalMaterial.equalsIgnoreCase("LINGERING_POTION"))
+                && item.isSet("type")
+                && stack.getItemMeta() instanceof PotionMeta) {
+            PotionMeta meta = (PotionMeta) stack.getItemMeta();
+            String type = item.getString("type");
+            if (type != null) {
+                String key = type.toUpperCase();
+                // Map legacy/short names to modern PotionType constants where needed
+                if (key.equals("REGEN")) {
+                    key = "REGENERATION";
+                } else if (key.equals("HEAL")) {
+                    key = "INSTANT_HEAL";
+                } else if (key.equals("HEALTH")) {
+                    key = "INSTANT_HEAL";
+                }
+                try {
+                    PotionType potionType = PotionType.valueOf(key);
+                    meta.setBasePotionType(potionType);
+                    stack.setItemMeta(meta);
+                } catch (IllegalArgumentException ignored) {
+                    // Unknown potion type; leave as created by XItemStack
+                }
+        }
+        }
         int amt = item.getInt("amount");
         if (amt < 1) amt = 1;
         stack.setAmount(amt);
