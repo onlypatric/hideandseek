@@ -32,6 +32,11 @@ function createBot(name, isLeader) {
     }
 
     setTimeout(() => {
+      console.log(`[BOT ${name}] Sending /hs leave`);
+      bot.chat('/hs leave');
+    }, 20000);
+
+    setTimeout(() => {
       console.log(`[BOT ${name}] Finished test window, quitting`);
       bot.quit();
     }, 30000);
