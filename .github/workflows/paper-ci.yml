@@ -41,7 +41,7 @@ jobs:
         working-directory: server
         run: |
           PAPER_VERSION=1.21.8
-          PAPER_BUILD=149
+          PAPER_BUILD=60
           PAPER_JAR="paper-${PAPER_VERSION}-${PAPER_BUILD}.jar"
           curl -L \
             "https://api.papermc.io/v2/projects/paper/versions/${PAPER_VERSION}/builds/${PAPER_BUILD}/downloads/${PAPER_JAR}" \
