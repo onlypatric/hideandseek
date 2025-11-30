@@ -83,7 +83,8 @@ public class Disguise {
     }
 
     public void update(){
-        if (display == null || display.isDead()) {
+        // Ensure the moving BlockDisplay exists only while not solid
+        if (!solid && (display == null || display.isDead())) {
             if (display != null) display.remove();
             respawnBlockDisplay();
         }
@@ -93,6 +94,11 @@ public class Disguise {
                 solid = true;
                 blockLocation = hider.getLocation().getBlock().getLocation();
                 respawnHitbox();
+                // Remove the dynamic block while we are in solid mode
+                if (display != null) {
+                    display.remove();
+                    display = null;
+                }
             }
             sendBlockUpdate(blockLocation, material);
         } else if(solid){
@@ -103,9 +109,12 @@ public class Disguise {
             hitBox = null;
             sendBlockUpdate(blockLocation, Material.AIR);
         }
-        toggleEntityVisibility(display, !solid);
+        // Only move and show the BlockDisplay while not solid
+        if (display != null) {
+            toggleEntityVisibility(display, !solid);
+            teleportEntity(display, true);
+        }
         teleportEntity(hitBox, true);
-        teleportEntity(display, true);
 
         if (Config.debugDisguise && display != null) {
             Location bLoc = display.getLocation();
@@ -209,7 +218,8 @@ public class Disguise {
         if (solid) return;
         solidifying = true;
         final Location lastLocation = hider.getLocation();
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> solidifyUpdate(lastLocation, 3), 10);
+        // Start countdown immediately; 3 steps * 20 ticks ≈ 3 seconds
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> solidifyUpdate(lastLocation, 3), 0);
     }
 
     private void solidifyUpdate(Location lastLocation, int time) {
