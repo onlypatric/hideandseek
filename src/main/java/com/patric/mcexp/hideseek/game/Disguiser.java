@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 public class Disguiser {
 
@@ -47,9 +46,9 @@ public class Disguiser {
             disguiseTickCounter = 0;
         }
 
-        Iterator<Map.Entry<Player, Disguise>> iterator = disguises.entrySet().iterator();
+        Iterator<java.util.Map.Entry<Player, Disguise>> iterator = disguises.entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry<Player, Disguise> entry = iterator.next();
+            java.util.Map.Entry<Player, Disguise> entry = iterator.next();
             Player player = entry.getKey();
             Disguise disguise = entry.getValue();
 

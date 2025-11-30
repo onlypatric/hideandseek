@@ -62,14 +62,12 @@ public class Config {
 		allowNaturalCauses,
 		saveInventory,
 		delayedRespawn,
-        dontRewardQuit,
+		dontRewardQuit,
 		spawnPatch,
 		dropItems,
 		respawnAsSpectator,
 		waitTillNoneLeft,
 		gameOverTitle,
-		// How many ticks between disguise/block updates
-		disguiseUpdateDelayTicks,
 		regenHealth,
 		debugDisguise;
 
@@ -89,10 +87,12 @@ public class Config {
 		lobbyItemStartPosition,
 		flightToggleItemPosition,
 		teleportItemPosition,
-        startingSeekerCount,
+		startingSeekerCount,
 		delayedRespawnDelay,
 		hidingTimer,
-        endGameDelay;
+		endGameDelay,
+		// How many ticks between disguise/block updates
+		disguiseUpdateDelayTicks;
 
 	public static float
 		seekerPingLeadingVolume,
