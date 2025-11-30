@@ -44,11 +44,11 @@ jobs:
             "https://github.com/dmulloy2/ProtocolLib/releases/download/5.4.0/ProtocolLib.jar" \
             -o ProtocolLib.jar
 
-      - name: Download Paper 1.21.8
+      - name: Download Paper 1.21.4
         working-directory: server
         run: |
-          PAPER_VERSION=1.21.8
-          PAPER_BUILD=60
+          PAPER_VERSION=1.21.4
+          PAPER_BUILD=232
           PAPER_JAR="paper-${PAPER_VERSION}-${PAPER_BUILD}.jar"
           curl -L \
             "https://api.papermc.io/v2/projects/paper/versions/${PAPER_VERSION}/builds/${PAPER_BUILD}/downloads/${PAPER_JAR}" \
