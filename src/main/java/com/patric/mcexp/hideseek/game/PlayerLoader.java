@@ -47,6 +47,10 @@ public class PlayerLoader {
         Titles.sendTitle(player, 10, 70, 20, ChatColor.WHITE + "" + message("HIDER_TEAM_NAME"), ChatColor.WHITE + message("HIDERS_SUBTITLE").toString());
         if(map.isBlockHuntEnabled()){
             openBlockHuntPicker(player, map);
+            // Give block-change item so hiders can reopen the selector later
+            if (blockChangeItem != null) {
+                player.getInventory().addItem(blockChangeItem);
+            }
         }
     }
 

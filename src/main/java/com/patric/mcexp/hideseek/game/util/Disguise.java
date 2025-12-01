@@ -83,8 +83,8 @@ public class Disguise {
     }
 
     public void update(){
-        // Ensure the moving BlockDisplay exists only while not solid
-        if (!solid && (display == null || display.isDead())) {
+        // Ensure the moving BlockDisplay exists
+        if (display == null || display.isDead()) {
             if (display != null) display.remove();
             respawnBlockDisplay();
         }
@@ -94,10 +94,10 @@ public class Disguise {
                 solid = true;
                 blockLocation = hider.getLocation().getBlock().getLocation();
                 respawnHitbox();
-                // Remove the dynamic block while we are in solid mode
+                // Snap the BlockDisplay to the solid block center for the hider
                 if (display != null) {
-                    display.remove();
-                    display = null;
+                    Location center = blockLocation.clone().add(0.5, 0, 0.5);
+                    display.teleport(center);
                 }
             }
             sendBlockUpdate(blockLocation, material);
@@ -109,10 +109,12 @@ public class Disguise {
             hitBox = null;
             sendBlockUpdate(blockLocation, Material.AIR);
         }
-        // Only move and show the BlockDisplay while not solid
+        // Only move BlockDisplay while not solid; keep it visible only to the hider when solid
         if (display != null) {
             toggleEntityVisibility(display, !solid);
-            teleportEntity(display, true);
+            if (!solid) {
+                teleportEntity(display, true);
+            }
         }
         teleportEntity(hitBox, true);
 
