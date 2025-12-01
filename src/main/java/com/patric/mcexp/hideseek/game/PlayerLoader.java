@@ -119,6 +119,12 @@ public class PlayerLoader {
             if (glowEnabled) {
                 player.getInventory().addItem(glowPowerupItem);
             }
+            if (blockChangeItem != null) {
+                com.patric.mcexp.hideseek.configuration.Map map = Main.getInstance().getGame().getCurrentMap();
+                if (map != null && map.isBlockHuntEnabled()) {
+                    player.getInventory().addItem(blockChangeItem);
+                }
+            }
         }
     }
 

@@ -108,7 +108,9 @@ public class Config {
 		lobbyStartItem,
 		glowPowerupItem,
 		flightToggleItem,
-		teleportItem;
+		teleportItem,
+		// Optional in-game item that lets hiders reopen the BlockHunt selector
+		blockChangeItem;
 
 	public static XSound
 		ringingSound,
@@ -242,6 +244,11 @@ public class Config {
 
 		teleportItem = createItemStack("spectatorItems.teleport");
 		teleportItemPosition = config.getInt("spectatorItems.teleport.position");
+
+		// In-game BlockHunt change item for hiders
+		if (config.getBoolean("blockChangeItem.enabled")) {
+			blockChangeItem = createItemStack("blockChangeItem");
+		}
 
 		//Database
 		databaseHost = config.getString("databaseHost");

@@ -4,6 +4,8 @@ import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.messages.ActionBar;
 import com.patric.mcexp.hideseek.Main;
 import com.patric.mcexp.hideseek.game.Board;
+import com.patric.mcexp.hideseek.game.PlayerLoader;
+import com.patric.mcexp.hideseek.configuration.Map;
 import com.patric.mcexp.hideseek.game.util.Status;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -68,16 +70,35 @@ public class InteractHandler implements Listener {
     }
 
     private void onPlayerInteractGame(ItemStack temp, PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+
+        // Glow powerup
         if (temp.isSimilar(glowPowerupItem)) {
             if (!glowEnabled) return;
-            Player player = event.getPlayer();
             if (Main.getInstance().getBoard().isHider(player)) {
                 Main.getInstance().getGame().getGlow().onProjectile();
                 player.getInventory().remove(glowPowerupItem);
                 assert XMaterial.SNOWBALL.get() != null;
                 player.getInventory().remove(XMaterial.SNOWBALL.get());
                 event.setCancelled(true);
+                return;
             }
+        }
+
+        // BlockHunt change item: reopen block selector for hiders
+        if (blockChangeItem != null && temp.isSimilar(blockChangeItem)) {
+            if (!Main.getInstance().getBoard().isHider(player)) {
+                event.setCancelled(true);
+                return;
+            }
+            Map map = Main.getInstance().getGame().getCurrentMap();
+            if (map == null || map.isNotSetup() || !map.isBlockHuntEnabled()) {
+                player.sendMessage(errorPrefix + message("BLOCKHUNT_DISABLED"));
+                event.setCancelled(true);
+                return;
+            }
+            PlayerLoader.openBlockHuntPicker(player, map);
+            event.setCancelled(true);
         }
     }
 
