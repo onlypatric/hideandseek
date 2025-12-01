@@ -92,7 +92,12 @@ public class Disguise {
         if(solidify){
             if(!solid) {
                 solid = true;
-                blockLocation = hider.getLocation().getBlock().getLocation();
+                // Choose the nearest block coordinates by rounding the player's location
+                Location loc = hider.getLocation();
+                int bx = (int) Math.round(loc.getX());
+                int by = (int) Math.round(loc.getY());
+                int bz = (int) Math.round(loc.getZ());
+                blockLocation = new Location(loc.getWorld(), bx, by, bz);
                 respawnHitbox();
                 // Snap the BlockDisplay to the solid block center for the hider
                 if (display != null) {

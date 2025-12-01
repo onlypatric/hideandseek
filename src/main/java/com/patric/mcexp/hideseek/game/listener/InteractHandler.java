@@ -37,9 +37,10 @@ public class InteractHandler implements Listener {
         }
         ItemStack temp = event.getItem();
         if (temp == null) return;
-        if (Main.getInstance().getGame().getStatus() == Status.STANDBY)
+        Status status = Main.getInstance().getGame().getStatus();
+        if (status == Status.STANDBY)
             onPlayerInteractLobby(temp, event);
-        if (Main.getInstance().getGame().getStatus() == Status.PLAYING)
+        if (status == Status.STARTING || status == Status.PLAYING)
             onPlayerInteractGame(temp, event);
         if (Main.getInstance().getBoard().isSpectator(event.getPlayer()))
             onSpectatorInteract(temp, event);

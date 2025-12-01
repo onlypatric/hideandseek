@@ -49,7 +49,7 @@ public class PlayerLoader {
             openBlockHuntPicker(player, map);
             // Give block-change item so hiders can reopen the selector later
             if (blockChangeItem != null) {
-                player.getInventory().addItem(blockChangeItem);
+                player.getInventory().setItem(blockChangeItemPosition, blockChangeItem.clone());
             }
         }
     }
@@ -126,7 +126,7 @@ public class PlayerLoader {
             if (blockChangeItem != null) {
                 com.patric.mcexp.hideseek.configuration.Map map = Main.getInstance().getGame().getCurrentMap();
                 if (map != null && map.isBlockHuntEnabled()) {
-                    player.getInventory().addItem(blockChangeItem);
+                    player.getInventory().setItem(blockChangeItemPosition, blockChangeItem.clone());
                 }
             }
         }

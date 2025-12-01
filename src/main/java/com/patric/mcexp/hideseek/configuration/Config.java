@@ -91,6 +91,7 @@ public class Config {
 		delayedRespawnDelay,
 		hidingTimer,
 		endGameDelay,
+		blockChangeItemPosition,
 		// How many ticks between disguise/block updates
 		disguiseUpdateDelayTicks;
 
@@ -248,6 +249,7 @@ public class Config {
 		// In-game BlockHunt change item for hiders
 		if (config.getBoolean("blockChangeItem.enabled")) {
 			blockChangeItem = createItemStack("blockChangeItem");
+			blockChangeItemPosition = config.getInt("blockChangeItem.position");
 		}
 
 		//Database

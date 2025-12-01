@@ -299,6 +299,7 @@ blockChangeItem:
     "Right-click to choose a new block",
     "Only works while you are a hider"
   ]
+  position: 4
   model-data: 0
   enabled: true
 
