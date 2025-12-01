@@ -40,7 +40,9 @@ public class InteractHandler implements Listener {
         Status status = Main.getInstance().getGame().getStatus();
         if (status == Status.STANDBY)
             onPlayerInteractLobby(temp, event);
-        if (status == Status.STARTING || status == Status.PLAYING)
+        // Allow in-game interactions (e.g. disguise change wand) even when in STANDBY,
+        // so debug-mode hiders can use them before the game officially starts.
+        if (status == Status.STARTING || status == Status.PLAYING || status == Status.STANDBY)
             onPlayerInteractGame(temp, event);
         if (Main.getInstance().getBoard().isSpectator(event.getPlayer()))
             onSpectatorInteract(temp, event);

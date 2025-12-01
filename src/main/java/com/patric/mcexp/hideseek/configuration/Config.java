@@ -249,7 +249,8 @@ public class Config {
 		// In-game BlockHunt change item for hiders
 		if (config.getBoolean("blockChangeItem.enabled")) {
 			blockChangeItem = createItemStack("blockChangeItem");
-			blockChangeItemPosition = config.getInt("blockChangeItem.position");
+			// Force the wand into the 9th hotbar slot (index 8)
+			blockChangeItemPosition = 8;
 		}
 
 		//Database
