@@ -117,6 +117,28 @@ jobs:
             fi
           fi
 
+      - name: Verify mid-game disguise block change occurred
+        working-directory: server
+        run: |
+          if [ ! -f logs/latest.log ]; then
+            echo "latest.log not found; cannot verify disguise changes"
+            exit 1
+          fi
+          echo "Checking disguise material changes for CiBot1..."
+          # Extract materials from disguise creation logs for CiBot1 and count distinct values
+          materials=$(grep "\[DISGUISE\] created for CiBot1 " logs/latest.log | sed -E 's/.*material=([A-Z_]+).*/\1/' | sort -u | tr '\n' ' ')
+          if [ -z "$materials" ]; then
+            echo "No disguise creation logs found for CiBot1."
+            exit 1
+          fi
+          count=$(echo "$materials" | wc -w | tr -d ' ')
+          echo "Disguise materials observed for CiBot1: $materials (count=$count)"
+          if [ "$count" -lt 2 ]; then
+            echo "Expected at least two different disguise materials for CiBot1 (initial pick and mid-game change)."
+            exit 1
+          fi
+          echo "Verified that mid-game disguise block change occurred for CiBot1."
+
       - name: Verify plugin loaded successfully
         working-directory: server
         run: |

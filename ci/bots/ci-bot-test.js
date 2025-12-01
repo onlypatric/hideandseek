@@ -39,6 +39,33 @@ function createBot(name, isLeader) {
           console.log(`[BOT ${name}] Stopped moving`);
         }, 5000);
       }, 15000);
+
+      // Mid-game: use the block-change wand to reopen the selector and pick a new block
+      setTimeout(() => {
+        try {
+          const slots = bot.inventory.slots;
+          let wandSlot = null;
+          for (let i = 0; i < slots.length; i++) {
+            const item = slots[i];
+            if (!item) continue;
+            // In CI config the wand is a BLAZE_ROD; match by item name
+            if (item.name && item.name.toLowerCase().includes('blaze_rod')) {
+              wandSlot = i;
+              break;
+            }
+          }
+          if (wandSlot == null) {
+            console.log(`[BOT ${name}] Could not find block-change wand in inventory`);
+          } else {
+            const hotbarIndex = wandSlot % 9;
+            console.log(`[BOT ${name}] Using block-change wand from slot ${hotbarIndex}`);
+            bot.setQuickBarSlot(hotbarIndex);
+            bot.activateItem(); // right-click with held item
+          }
+        } catch (e) {
+          console.error(`[BOT ${name}] Error while using block-change wand:`, e);
+        }
+      }, 12000);
     } else {
       // Seeker periodically attacks nearest player to trigger hit logic
       setInterval(() => {
@@ -76,7 +103,7 @@ function createBot(name, isLeader) {
     console.log('[BOT][CHAT]', message.toString());
   });
 
-  let hasClickedWindow = false;
+  let blockSelectionCount = 0;
 
   bot.on('windowOpen', (window) => {
     const rawTitle = window?.title;
@@ -89,21 +116,22 @@ function createBot(name, isLeader) {
     console.log(`[BOT ${name}] Window opened with title: ${title}`);
 
     // In CI, the only meaningful GUI we expect is the BlockHunt picker.
-    // Click the first slot once to trigger disguise logic.
-    if (!hasClickedWindow) {
-      hasClickedWindow = true;
-      console.log(`[BOT ${name}] Attempting to click first slot in window`);
+    // First time: click slot 0; second time (after using the wand): click slot 1 to change block.
+    if (title.includes('Select a Block:')) {
+      blockSelectionCount += 1;
+      const slotToClick = blockSelectionCount === 1 ? 0 : 1;
+      console.log(`[BOT ${name}] Attempting to click window slot ${slotToClick}`);
       setTimeout(() => {
         try {
-          bot.clickWindow(0, 0, 0, (err) => {
+          bot.clickWindow(slotToClick, 0, 0, (err) => {
             if (err) {
-              console.error(`[BOT ${name}] Error clicking window slot 0:`, err);
+              console.error(`[BOT ${name}] Error clicking window slot ${slotToClick}:`, err);
             } else {
-              console.log(`[BOT ${name}] Clicked window slot 0`);
+              console.log(`[BOT ${name}] Clicked window slot ${slotToClick}`);
             }
           });
         } catch (e) {
-          console.error(`[BOT ${name}] Exception while clicking window slot:`, e);
+          console.error(`[BOT ${name}] Exception while clicking window slot ${slotToClick}:`, e);
         }
       }, 1000);
     }
