@@ -7,6 +7,7 @@ import com.patric.mcexp.hideseek.Main;
 import com.patric.mcexp.hideseek.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.BlockDisplay;
@@ -101,10 +102,9 @@ public class Disguise {
                         loc.getBlockZ()
                 );
                 respawnHitbox();
-                // Snap the BlockDisplay to the solid block center for the hider
+                // Snap the BlockDisplay directly to the solid block position for the hider
                 if (display != null) {
-                    Location center = blockLocation.clone().add(0.5, 0, 0.5);
-                    display.teleport(center);
+                    display.teleport(blockLocation);
                 }
             }
             sendBlockUpdate(blockLocation, material);
@@ -231,11 +231,11 @@ public class Disguise {
         if (solid) return;
         solidifying = true;
         final Location lastLocation = hider.getLocation();
-        // Start countdown immediately; 3 steps * 20 ticks ≈ 3 seconds
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> solidifyUpdate(lastLocation, 3), 0);
+        // Start countdown immediately; 60 ticks ≈ 3 seconds, checked every 5 ticks
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> solidifyUpdate(lastLocation, 60), 0);
     }
 
-    private void solidifyUpdate(Location lastLocation, int time) {
+    private void solidifyUpdate(Location lastLocation, int remainingTicks) {
         Location currentLocation = hider.getLocation();
         if(lastLocation.getWorld() != currentLocation.getWorld()) {
             solidifying = false;
@@ -243,20 +243,43 @@ public class Disguise {
         }
         if(lastLocation.distance(currentLocation) > .1) {
             solidifying = false;
+            // Restart countdown from the new position so players don't
+            // need to jiggle their camera to re-trigger solidification.
+            startSolidifying();
             return;
         }
-        if(time == 0) {
+        if(remainingTicks <= 0) {
             ActionBar.clearActionBar(hider);
             setSolidify(true);
             solidifying = false;
         } else {
-            StringBuilder s = new StringBuilder();
-            for (int i = 0; i < time; i++) {
-                s.append("▪");
+            // Show a numeric countdown with color: 3 (green), 2 (gold), 1 (red)
+            int secondsRemaining = (int) Math.ceil(remainingTicks / 20.0);
+            if (secondsRemaining < 1) secondsRemaining = 1;
+            ChatColor color;
+            switch (secondsRemaining) {
+                case 3:
+                    color = ChatColor.GREEN;
+                    break;
+                case 2:
+                    color = ChatColor.GOLD;
+                    break;
+                default:
+                    color = ChatColor.RED;
+                    break;
             }
-            ActionBar.sendActionBar(hider, s.toString());
-            XSound.BLOCK_NOTE_BLOCK_PLING.play(hider, 1, 1);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), () -> solidifyUpdate(lastLocation, time - 1), 20);
+            ActionBar.sendActionBar(hider, color + Integer.toString(secondsRemaining));
+            // Keep the sound roughly once per second
+            if (remainingTicks % 20 == 0) {
+                XSound.BLOCK_NOTE_BLOCK_PLING.play(hider, 1, 1);
+            }
+            // Check movement more frequently for responsiveness
+            int interval = 5;
+            Bukkit.getScheduler().scheduleSyncDelayedTask(
+                    Main.getInstance(),
+                    () -> solidifyUpdate(lastLocation, remainingTicks - interval),
+                    interval
+            );
         }
     }
 
