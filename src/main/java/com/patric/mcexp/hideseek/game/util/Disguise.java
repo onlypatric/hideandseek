@@ -140,6 +140,9 @@ public class Disguise {
         packet.setBlockPosition(location);
         packet.setMaterial(material);
         Bukkit.getOnlinePlayers().forEach(receiver -> {
+            // Do not send the fake solid block to the hider themselves,
+            // otherwise their client will think they are inside a block and nudge them.
+            if (receiver.equals(hider)) return;
             packet.send(receiver);
         });
     }
@@ -157,13 +160,14 @@ public class Disguise {
             z = hider.getLocation().getZ();
         }
         org.bukkit.Location current = entity.getLocation();
+        // Keep the block's visual rotation stable and independent of the player's look direction
         org.bukkit.Location target = new org.bukkit.Location(
                 current.getWorld(),
                 x,
                 y,
                 z,
-                current.getYaw(),
-                current.getPitch()
+                0.0f,
+                0.0f
         );
         entity.teleport(target);
     }
