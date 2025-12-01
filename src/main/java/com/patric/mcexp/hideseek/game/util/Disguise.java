@@ -92,17 +92,14 @@ public class Disguise {
         if (solidify) {
             if (!solid) {
                 solid = true;
-                // Choose block coordinates by rounding the player's position "up"
-                // so the solid block visually sits in front of/around the player,
-                // rather than using the raw floating-point position.
                 Location loc = hider.getLocation();
-                double px = loc.getX();
-                double py = loc.getY();
-                double pz = loc.getZ();
-                int bx = px >= 0 ? (int) Math.ceil(px) : (int) Math.floor(px);
-                int by = (int) Math.floor(py);
-                int bz = pz >= 0 ? (int) Math.ceil(pz) : (int) Math.floor(pz);
-                blockLocation = new Location(loc.getWorld(), bx, by, bz);
+                // Snap to the exact block the player is currently standing in
+                blockLocation = new Location(
+                        loc.getWorld(),
+                        loc.getBlockX(),
+                        loc.getBlockY(),
+                        loc.getBlockZ()
+                );
                 respawnHitbox();
                 // Snap the BlockDisplay to the solid block center for the hider
                 if (display != null) {
