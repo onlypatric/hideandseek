@@ -123,15 +123,10 @@ public class Disguise {
                 teleportEntity(display, true);
             }
         }
-        // Keep the hitbox aligned with the moving disguise while unsolid,
-        // but lock it to the solid block position once solidified so it
-        // doesn't keep following (and pushing) the hider.
-        if (hitBox != null) {
-            if (solid && blockLocation != null) {
-                hitBox.teleport(blockLocation);
-            } else {
-                teleportEntity(hitBox, true);
-            }
+        // Keep the hitbox fixed at the solid block position; do not follow
+        // the player while they are moving/unsolid to avoid pushing them.
+        if (hitBox != null && solid && blockLocation != null) {
+            hitBox.teleport(blockLocation);
         }
 
         if (Config.debugDisguise && display != null) {
