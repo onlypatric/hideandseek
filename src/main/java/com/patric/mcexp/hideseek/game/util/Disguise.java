@@ -123,7 +123,16 @@ public class Disguise {
                 teleportEntity(display, true);
             }
         }
-        teleportEntity(hitBox, true);
+        // Keep the hitbox aligned with the moving disguise while unsolid,
+        // but lock it to the solid block position once solidified so it
+        // doesn't keep following (and pushing) the hider.
+        if (hitBox != null) {
+            if (solid && blockLocation != null) {
+                hitBox.teleport(blockLocation);
+            } else {
+                teleportEntity(hitBox, true);
+            }
+        }
 
         if (Config.debugDisguise && display != null) {
             Location bLoc = display.getLocation();
@@ -207,10 +216,15 @@ public class Disguise {
     }
 
     private void respawnHitbox(){
+        // Spawn the invisible hitbox exactly where the solid block will be
+        // so seekers hit the block position rather than a moving entity.
+        Location spawnLocation = blockLocation != null
+                ? blockLocation.clone()
+                : hider.getLocation().add(0, 1000, 0);
         if (Main.getInstance().supports(11)) {
-            hitBox = (AbstractHorse) hider.getLocation().getWorld().spawnEntity(hider.getLocation().add(0, 1000, 0), EntityType.SKELETON_HORSE);
+            hitBox = (AbstractHorse) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SKELETON_HORSE);
         } else {
-            hitBox = (AbstractHorse) hider.getLocation().getWorld().spawnEntity(hider.getLocation().add(0, 1000, 0), EntityType.HORSE);
+            hitBox = (AbstractHorse) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.HORSE);
             hitBox.setVariant(Horse.Variant.SKELETON_HORSE);
         }
         if (Main.getInstance().supports(10)) {
